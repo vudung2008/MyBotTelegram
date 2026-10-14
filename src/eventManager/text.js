@@ -11,7 +11,7 @@ async function execute({ message, reply }) {
   const text = message?.text || "";
   if (text) {
     await reply(`Bạn đã gửi tin nhắn: ${text}`, {
-        reply_to_message_id: message.message_id,
+      reply_to_message_id: message.message_id,
     });
   }
 }

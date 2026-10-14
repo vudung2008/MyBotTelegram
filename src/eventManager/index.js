@@ -141,7 +141,7 @@ function createEventHandler(event) {
 }
 
 function registerEvents(bot, options = {}) {
-  const allEvents = loadEvents();
+  const allEvents = options.events || loadEvents();
   const events = allEvents.filter(({ config }) => {
     if (options.only) {
       return (
