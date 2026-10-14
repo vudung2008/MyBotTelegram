@@ -71,7 +71,7 @@ function parseArguments(text, commandName) {
   return { args, flags, rawArgs: input.trim() };
 }
 
-async function executeCommand(ctx, command, commandList) {
+async function executeCommand(ctx, command, commandList, options = {}) {
   const { config, data = {}, execute } = command;
   const parsed = parseArguments(ctx.message.text, config.name);
   const result = await execute({
@@ -79,6 +79,8 @@ async function executeCommand(ctx, command, commandList) {
     data,
     command: config,
     commands: commandList,
+    ctx,
+    replyFlow: options.replyFlow,
     user: {
       id: ctx.from?.id,
       firstName: ctx.from?.first_name || "",
@@ -130,7 +132,7 @@ function registerCommands(bot, options = {}) {
 
     bot.command(config.name, async (ctx) => {
       try {
-        await executeCommand(ctx, command, commandList);
+        await executeCommand(ctx, command, commandList, options);
       } catch (error) {
         logger.error(`Command /${config.name} thất bại`, {
           error: error.message,

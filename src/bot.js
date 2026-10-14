@@ -9,15 +9,21 @@ const {
   registerEvents,
 } = require("./eventManager");
 const logger = require("./logger");
+const { createReplyFlow } = require("./replyFlow");
 
 function createBot(token) {
   const bot = new Telegraf(token);
+  const replyFlow = createReplyFlow();
   const eventDefinitions = loadEvents();
+  replyFlow.register(bot);
   const updateEvents = registerEvents(bot, {
     events: eventDefinitions,
     only: ["update"],
   });
-  const commands = registerCommands(bot, { events: eventDefinitions });
+  const commands = registerCommands(bot, {
+    events: eventDefinitions,
+    replyFlow,
+  });
   const events = registerEvents(bot, {
     events: eventDefinitions,
     exclude: ["update"],
@@ -32,6 +38,7 @@ function createBot(token) {
     commands,
     events: [...updateEvents, ...events],
     allowedUpdates: TELEGRAM_UPDATE_TYPES,
+    replyFlow,
   };
 }
 
